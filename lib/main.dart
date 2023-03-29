@@ -39,6 +39,13 @@ class MyApp extends StatelessWidget {
                   ),
                 ),
               ),
+              BlocProvider(
+                create: (context) => AyatBloc(
+                  ApiService(
+                    client: http.Client(),
+                  ),
+                ),
+              ),
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
