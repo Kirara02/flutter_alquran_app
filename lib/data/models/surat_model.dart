@@ -9,7 +9,7 @@ class SuratModel {
         required this.tempatTurun,
         required this.arti,
         required this.deskripsi,
-        required this.audio,
+        required this.audioFull,
     });
 
     final int nomor;
@@ -19,7 +19,7 @@ class SuratModel {
     final TempatTurun tempatTurun;
     final String arti;
     final String deskripsi;
-    final String audio;
+    final Map<String, String> audioFull;
 
     factory SuratModel.fromRawJson(String str) => SuratModel.fromJson(json.decode(str));
 
@@ -28,31 +28,31 @@ class SuratModel {
     factory SuratModel.fromJson(Map<String, dynamic> json) => SuratModel(
         nomor: json["nomor"],
         nama: json["nama"],
-        namaLatin: json["nama_latin"],
-        jumlahAyat: json["jumlah_ayat"],
-        tempatTurun: tempatTurunValues.map[json["tempat_turun"]]!,
+        namaLatin: json["namaLatin"],
+        jumlahAyat: json["jumlahAyat"],
+        tempatTurun: tempatTurunValues.map[json["tempatTurun"]]!,
         arti: json["arti"],
         deskripsi: json["deskripsi"],
-        audio: json["audio"],
+        audioFull: Map.from(json["audioFull"]).map((k, v) => MapEntry<String, String>(k, v)),
     );
 
     Map<String, dynamic> toJson() => {
         "nomor": nomor,
         "nama": nama,
-        "nama_latin": namaLatin,
-        "jumlah_ayat": jumlahAyat,
-        "tempat_turun": tempatTurunValues.reverse[tempatTurun],
+        "namaLatin": namaLatin,
+        "jumlahAyat": jumlahAyat,
+        "tempatTurun": tempatTurunValues.reverse[tempatTurun],
         "arti": arti,
         "deskripsi": deskripsi,
-        "audio": audio,
+        "audioFull": Map.from(audioFull).map((k, v) => MapEntry<String, dynamic>(k, v)),
     };
 }
 
 enum TempatTurun { MEKAH, MADINAH }
 
 final tempatTurunValues = EnumValues({
-    "madinah": TempatTurun.MADINAH,
-    "mekah": TempatTurun.MEKAH
+    "Madinah": TempatTurun.MADINAH,
+    "Mekah": TempatTurun.MEKAH
 });
 
 class EnumValues<T> {

@@ -13,11 +13,12 @@ class ApiService {
 
   Future<Either<String, List<SuratModel>>> getAllSurat() async {
     try {
-      final response =
-          await client.get(Uri.parse('https://equran.id/api/surat'));
+      final response = await client.get(
+        Uri.parse('https://equran.id/api/v2/surat'),
+      );
       return Right(
         List<SuratModel>.from(
-          jsonDecode(response.body).map(
+          jsonDecode(response.body)['data'].map(
             (x) => SuratModel.fromJson(x),
           ),
         ).toList(),
@@ -30,12 +31,15 @@ class ApiService {
   Future<Either<String, SuratDetailModel>> getDetailSurat(
       int nomorSurat) async {
     try {
-      final response = await client
-          .get(Uri.parse('https://equran.id/api/surat/$nomorSurat'));
-      return Right(SuratDetailModel.fromJson(jsonDecode(response.body)));
-      print(response.body);
+      final response = await client.get(
+        Uri.parse('https://equran.id/api/v2/surat/$nomorSurat'),
+      );
+      return Right(
+        SuratDetailModel.fromJson(
+          jsonDecode(response.body)['data'],
+        ),
+      );
     } catch (e) {
-      print(e.toString());
       return Left(e.toString());
     }
   }

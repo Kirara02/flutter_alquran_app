@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ahlul_quran_app/common/contants.dart';
 import 'package:flutter_ahlul_quran_app/cubit/surat/surat_cubit.dart';
@@ -12,9 +13,34 @@ class SuratPage extends StatefulWidget {
 }
 
 class _SuratPageState extends State<SuratPage> {
+  final audioPlayer = AudioPlayer();
+  bool isPlaying = false;
+  int value = 0;
+  Duration duration = Duration.zero;
+  Duration position = Duration.zero;
+
   @override
   void initState() {
     context.read<SuratCubit>().getAllSurat();
+
+    audioPlayer.onPlayerStateChanged.listen((state) {
+      setState(() {
+        isPlaying = state == PlayerState.PLAYING;
+      });
+    });
+
+    audioPlayer.onDurationChanged.listen((newDuration) {
+      setState(() {
+        duration = newDuration;
+      });
+    });
+
+    audioPlayer.onAudioPositionChanged.listen((newPosition) {
+      setState(() {
+        position = newPosition;
+      });
+    });
+
     super.initState();
   }
 
@@ -56,8 +82,26 @@ class _SuratPageState extends State<SuratPage> {
                         ),
                       ),
                       title: Text('${surat.namaLatin}, ${surat.nama}'),
-                      subtitle:
-                          Text('${surat.arti}, ${surat.jumlahAyat} Ayat.'),
+                      subtitle: Text(
+                        '${surat.arti}, ${surat.jumlahAyat} Ayat.',
+                      ),
+                      trailing: IconButton(
+                        onPressed: () async {
+                          if (isPlaying) {
+                            await audioPlayer.pause();
+                          } else {
+                            setState(() {
+                              value = surat.nomor - 1;
+                            });
+                            await audioPlayer.play(surat.audioFull['02']!);
+                          }
+                        },
+                        icon: Icon(
+                          isPlaying && index == value
+                              ? Icons.pause
+                              : Icons.play_arrow,
+                        ),
+                      ),
                     ),
                   ),
                 );
